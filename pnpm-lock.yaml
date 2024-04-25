@@ -86,7 +86,7 @@ devDependencies:
     specifier: ^5.2.2
     version: 5.4.5
   vite:
-    specifier: ^5.2.0
+    specifier: ^5.2.10
     version: 5.2.10
   vite-plugin-svgr:
     specifier: ^4.2.0

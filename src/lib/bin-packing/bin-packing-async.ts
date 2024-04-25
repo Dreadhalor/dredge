@@ -6,8 +6,12 @@ export const binPackingAsync = (
   signal: AbortSignal,
 ): Promise<PackedItem[] | null> => {
   return new Promise((resolve, reject) => {
-    const workerUrl = new URL('./bin-packing.worker', import.meta.url);
-    const worker = new Worker(workerUrl, { type: 'module' });
+    const worker = new Worker(
+      new URL('./bin-packing.worker', import.meta.url),
+      {
+        type: 'module',
+      },
+    );
 
     worker.onmessage = (event) => {
       const result = event.data;
