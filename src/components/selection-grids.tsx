@@ -58,11 +58,13 @@ export const SelectionGrids = ({
 
   return (
     <div className='flex h-full flex-col overflow-auto bg-encyclopedia-pageFill'>
+      <input className='hidden' />
       <div className='sticky top-0 z-20 flex w-full gap-2 bg-encyclopedia-pageFill p-2'>
         <Input
+          autoFocus={false}
           type='search'
           placeholder='Search...'
-          className='flex-1 rounded-none border-4 border-encyclopedia-border bg-encyclopedia-entryFill text-black placeholder:text-gray-600'
+          className='flex-1 rounded-none border-4 border-encyclopedia-border bg-encyclopedia-entryFill text-[16px] text-black placeholder:text-gray-600'
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
