@@ -8,7 +8,11 @@ export const Navbar = () => {
         <DredgeAutopackerLogo className='h-8 text-white' fill='white' />
         <span className='-mt-0.5 text-xs text-muted-foreground'>
           a&nbsp;
-          <a href='https://www.scottjhetrick.com' className='hover:underline'>
+          <a
+            href='https://www.scottjhetrick.com'
+            target='_blank'
+            className='hover:underline'
+          >
             Scott Hetrick
           </a>
           &nbsp;project

@@ -3,7 +3,7 @@ export const BuyMeACoffeeButton = () => {
     <a
       href='https://buymeacoffee.com/dreadhalor'
       target='_blank'
-      className='mr-4 flex items-center justify-center gap-2 rounded-lg bg-[#FFDD00] px-4 py-2 text-[20px] font-semibold text-black hover:bg-[#FFDD00]'
+      className='mr-4 flex items-center justify-center gap-2 text-nowrap rounded-lg bg-[#FFDD00] px-4 py-2 text-[20px] font-semibold text-black hover:bg-[#FFDD00]'
       style={{
         fontFamily: 'Cookie',
       }}
@@ -70,7 +70,7 @@ export const BuyMeACoffeeButton = () => {
           fill='#0D0C22'
         ></path>
       </svg>
-      Buy me a coffee
+      <span className='hidden sm:flex'>Buy me a coffee</span>
     </a>
   );
 };

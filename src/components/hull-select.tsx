@@ -8,18 +8,30 @@ import {
 } from '@dredge/ui/select';
 import { hulls } from '@dredge/data/hull-data';
 import { useDredge } from '@dredge/providers/dredge-provider';
+import { SlotType } from '@dredge/types';
 export const HullSelect = () => {
-  const { hull, setHull } = useDredge();
+  const { hull, setHull, setPackedItems } = useDredge();
   const handleSelect = (val: string) => {
     const selectedHull = hulls.find((hull) => hull.id === Number(val));
     if (selectedHull) {
+      // if the hull is smaller, remove all packed items
+      if (
+        selectedHull.grid.flat().filter((slot) => slot === SlotType.Available)
+          .length <
+        hull.grid.flat().filter((slot) => slot === SlotType.Available).length
+      ) {
+        setPackedItems([]);
+      }
+
       setHull(selectedHull);
     }
   };
   return (
     <Select value={`${hull?.id || ''}`} onValueChange={handleSelect}>
       <SelectTrigger className='w-[180px]'>
-        <SelectValue placeholder='Select a hull' />
+        <SelectValue placeholder='Select a hull'>
+          {hull?.name || 'Select a hull'}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

@@ -8,8 +8,18 @@ import { useEffect, useState } from 'react';
 import { questItemData } from '@dredge/data/quest-item-data';
 import { trinketData } from '@dredge/data/trinket-data';
 import { GridItemBlankEntry } from './selection-grid/grid-entry';
+import { useDredge } from '@dredge/providers/dredge-provider';
+import { data } from '@dredge/data/combined-data';
 
-export const SelectionGrids = () => {
+export const SelectionGrids = ({
+  children,
+}: {
+  children?: React.ReactNode;
+}) => {
+  const { packedItems } = useDredge();
+  const inventoryTiles = data.filter((item) =>
+    packedItems.some((i) => i.itemId === item.id),
+  );
   const [filter, setFilter] = useState('' as string);
   const [filteredFishData, setFilteredFishData] = useState(fishData);
   const [filteredItemData, setFilteredItemData] = useState(itemData);
@@ -48,15 +58,22 @@ export const SelectionGrids = () => {
 
   return (
     <div className='flex h-full flex-col overflow-auto bg-encyclopedia-pageFill'>
-      <div className='sticky top-0 z-20 w-full bg-encyclopedia-pageFill p-2'>
+      <div className='sticky top-0 z-20 flex w-full gap-2 bg-encyclopedia-pageFill p-2'>
         <Input
           type='search'
           placeholder='Search...'
-          className='w-full rounded-none border-4 border-encyclopedia-border bg-encyclopedia-entryFill text-black placeholder:text-gray-600'
+          className='flex-1 rounded-none border-4 border-encyclopedia-border bg-encyclopedia-entryFill text-black placeholder:text-gray-600'
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
+        {children}
       </div>
+      {inventoryTiles.length > 0 && !filter && (
+        <>
+          <SectionDivider title='Current Inventory' />
+          <SelectionGrid items={inventoryTiles} />
+        </>
+      )}
       <SectionDivider title='Fish' />
       <SelectionGrid items={filteredFishData} />
       <SectionDivider title='Items' />

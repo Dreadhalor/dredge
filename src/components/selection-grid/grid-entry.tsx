@@ -63,9 +63,9 @@ export const GridItemEntry = ({ item }: Props) => {
   const { id, name, width, height } = item;
   const { packedItems, packItems } = useDredge();
 
-  const inInventory = packedItems.some(
-    (packedItem) => packedItem.itemId === id,
-  );
+  const numberInInventory = packedItems.filter(
+    (item) => item.itemId === id,
+  ).length;
 
   const getTitle = () => {
     if (item.type === 'fish') {
@@ -88,13 +88,21 @@ export const GridItemEntry = ({ item }: Props) => {
       className='flex h-fit cursor-pointer select-none flex-col items-center gap-1 bg-encyclopedia-pageFill p-3 text-black hover:brightness-105'
       onClick={handleClick}
     >
-      <span className='flex flex-col items-center text-[14px] lg:text-[16px]'>
-        {`${getTitle()}${inInventory ? ' (✓)' : ''}`}
+      <span className='flex flex-col items-center text-[12px] md:text-[14px] lg:text-[16px]'>
+        {`${getTitle()}${numberInInventory ? ` (${numberInInventory})` : ''}`}
         <img src={EncyclopediaUnderlineImage} width={100} />
       </span>
       <div className='relative items-center justify-center border-[5px] border-encyclopedia-border bg-encyclopedia-entryFill p-[2px]'>
         <EncyclopediaGridSpacer />
         <EncyclopediaGrid width={width} height={height} />
+        {item.type === 'fish' && item.value && (
+          <span className='absolute right-1 top-0 text-xs text-black'>
+            {item.value.toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            })}
+          </span>
+        )}
         <div className='absolute inset-0 flex items-center justify-center'>
           <FishImage fish={item} />
         </div>

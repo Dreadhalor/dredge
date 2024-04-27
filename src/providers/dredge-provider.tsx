@@ -4,6 +4,7 @@ import { HullData, PackedItem, SlotType } from '@dredge/types';
 import { createContext, useContext, useState } from 'react';
 import { binPackingAsync } from '@dredge/lib/bin-packing/bin-packing-async';
 import { useMediaQuery } from 'react-responsive';
+import { toast } from 'sonner';
 
 type DredgeProviderContextType = {
   hull: HullData;
@@ -39,12 +40,18 @@ export const DredgeProvider = ({ children }: { children: React.ReactNode }) => {
   const isLarge = useMediaQuery({
     query: '(min-width: 1024px)',
   });
+  const isMedium = useMediaQuery({
+    query: '(min-width: 768px)',
+  });
 
   const getEncyclopediaGridSquareSize = () => {
     if (isLarge) {
       return BASE_ENCYCLOPEDIA_GRID_SQUARE_SIZE;
     }
-    return BASE_ENCYCLOPEDIA_GRID_SQUARE_SIZE * 0.8;
+    if (isMedium) {
+      return BASE_ENCYCLOPEDIA_GRID_SQUARE_SIZE * 0.8;
+    }
+    return BASE_ENCYCLOPEDIA_GRID_SQUARE_SIZE * 0.6;
   };
 
   const toggleSlot = (row: number, col: number) => {
@@ -80,15 +87,12 @@ export const DredgeProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const packItems = async (newItems: PackedItem[]) => {
-    console.log('Packing items:', newItems);
     const controller = new AbortController();
     setAbortController(controller);
     setIsLoading(true);
 
     try {
       const allItems = [...packedItems, ...newItems];
-      console.log('All items:', allItems);
-
       const packed = await binPackingAsync(
         allItems,
         hull.grid,
@@ -96,13 +100,17 @@ export const DredgeProvider = ({ children }: { children: React.ReactNode }) => {
       );
       if (packed) {
         setPackedItems(packed);
-        console.log('Packed:', packed);
+      } else {
+        toast.error('No solution found!', {
+          duration: Infinity,
+        });
       }
     } catch (error) {
       if ((error as Error).name === 'AbortError') {
-        console.log('Calculation aborted');
+        toast.error('Calculation aborted');
       } else {
         console.error('Error during calculation:', error);
+        toast.error('An error occurred during calculation.');
       }
     } finally {
       setIsLoading(false);
