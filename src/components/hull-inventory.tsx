@@ -121,8 +121,6 @@ const HullInventoryGrid = () => {
 export const HullInventory = () => {
   const { packedItems, isLoading } = useDredge();
 
-  // const desiredWidth = 572;
-
   const totalValue = (packedItems || [])
     .reduce((total, item) => {
       const fish = fishData.find((_fish) => _fish.id === item.itemId);
@@ -136,11 +134,7 @@ export const HullInventory = () => {
   return (
     <div className='relative flex h-full flex-1 flex-col items-center'>
       {isLoading && <HullLoadingScreen />}
-      <ScalingDiv
-        desiredWidth={656}
-        desiredHeight={797}
-        // className='max-h-screen'
-      >
+      <ScalingDiv desiredWidth={656} desiredHeight={777}>
         <div
           className='relative flex flex-col items-center gap-[10px] px-[42px] pb-[36px] pt-[20px]'
           style={{
@@ -152,9 +146,9 @@ export const HullInventory = () => {
         >
           <div className='flex items-center gap-5'>
             <HullSelect />
-            <div className='flex flex-col items-center'>
-              Total value:
-              <span className='text-2xl'>{totalValue}</span>
+            <div className='flex items-center'>
+              Total base fish value:&nbsp;
+              <span className='text-lg font-bold'>{totalValue}</span>
             </div>
           </div>
           <div className='relative flex flex-col items-center'>
