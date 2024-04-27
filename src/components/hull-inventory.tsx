@@ -7,9 +7,8 @@ import { cn, getItemAt } from '@dredge/lib/utils';
 import { BorderImage, DamageImage } from '@dredge/assets/ui';
 import { SlotType } from '@dredge/types';
 import { fishData } from '@dredge/data/fish-data';
-import { useState } from 'react';
-import { useResizeObserver } from '@dredge/hooks/use-resize-observer';
 import { HullLoadingScreen } from './hull-loading-screen';
+import ScalingDiv from './scaling-div';
 
 const INVENTORY_SQUARE_SIZE = 55;
 const INVENTORY_SQUARE_GAP = 6;
@@ -38,7 +37,7 @@ const HullInventorySquare = ({ row, col }: HullInventorySquareProps) => {
   return (
     <div
       className={cn(
-        'border-inventory-squareBorder group cursor-pointer border-[3px]',
+        'group cursor-pointer border-[3px] border-inventory-squareBorder',
         !unlocked && 'pointer-events-none',
         item && 'bg-inventory-squareBorder hover:bg-opacity-60',
       )}
@@ -63,10 +62,7 @@ const HullInventorySquare = ({ row, col }: HullInventorySquareProps) => {
   );
 };
 
-interface Props {
-  scale: number;
-}
-const HullInventoryGrid = ({ scale }: Props) => {
+const HullInventoryGrid = () => {
   const {
     hull: { grid },
     packedItems,
@@ -85,12 +81,7 @@ const HullInventoryGrid = ({ scale }: Props) => {
     .filter(Boolean);
 
   return (
-    <div
-      className='absolute inset-0 flex items-center justify-center'
-      style={{
-        scale: `${scale}`,
-      }}
-    >
+    <div className='absolute inset-0 flex items-center justify-center'>
       <div
         className='relative grid'
         style={{
@@ -130,14 +121,8 @@ const HullInventoryGrid = ({ scale }: Props) => {
 export const HullInventory = () => {
   const { packedItems, isLoading } = useDredge();
 
-  const desiredWidth = 572;
-  const [scale, setScale] = useState(1);
+  // const desiredWidth = 572;
 
-  const handleResize = ({ width }: { width: number }) => {
-    setScale(width / desiredWidth);
-  };
-
-  const hullAreaRef = useResizeObserver(handleResize);
   const totalValue = (packedItems || [])
     .reduce((total, item) => {
       const fish = fishData.find((_fish) => _fish.id === item.itemId);
@@ -149,29 +134,35 @@ export const HullInventory = () => {
     });
 
   return (
-    <div className='relative flex flex-1 flex-col items-center'>
+    <div className='relative flex h-full flex-1 flex-col items-center'>
       {isLoading && <HullLoadingScreen />}
-      <div
-        className='relative flex flex-col items-center gap-[10px] px-[42px] pb-[36px] pt-[20px]'
-        style={{
-          borderImage: `url(${BorderImage})`,
-          borderImageSlice: '50',
-          borderImageRepeat: 'repeat',
-          borderImageWidth: '20px',
-        }}
+      <ScalingDiv
+        desiredWidth={656}
+        desiredHeight={797}
+        // className='max-h-screen'
       >
-        <div className='flex items-center gap-5'>
-          <HullSelect />
-          <div className='flex flex-col items-center'>
-            Total value:
-            <span className='text-2xl'>{totalValue}</span>
+        <div
+          className='relative flex flex-col items-center gap-[10px] px-[42px] pb-[36px] pt-[20px]'
+          style={{
+            borderImage: `url(${BorderImage})`,
+            borderImageSlice: '50',
+            borderImageRepeat: 'repeat',
+            borderImageWidth: '20px',
+          }}
+        >
+          <div className='flex items-center gap-5'>
+            <HullSelect />
+            <div className='flex flex-col items-center'>
+              Total value:
+              <span className='text-2xl'>{totalValue}</span>
+            </div>
+          </div>
+          <div className='relative flex flex-col items-center'>
+            <CargoHull />
+            <HullInventoryGrid />
           </div>
         </div>
-        <div className='relative flex flex-col items-center' ref={hullAreaRef}>
-          <CargoHull />
-          <HullInventoryGrid scale={scale} />
-        </div>
-      </div>
+      </ScalingDiv>
     </div>
   );
 };

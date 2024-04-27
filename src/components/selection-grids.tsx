@@ -7,6 +7,7 @@ import { Input } from './ui/input';
 import { useEffect, useState } from 'react';
 import { questItemData } from '@dredge/data/quest-item-data';
 import { trinketData } from '@dredge/data/trinket-data';
+import { GridItemBlankEntry } from './selection-grid/grid-entry';
 
 export const SelectionGrids = () => {
   const [filter, setFilter] = useState('' as string);
@@ -46,12 +47,12 @@ export const SelectionGrids = () => {
   }, [filter]);
 
   return (
-    <div className='bg-encyclopedia-pageFill flex h-full flex-col overflow-auto'>
-      <div className='bg-encyclopedia-pageFill sticky top-0 z-10 w-full p-2'>
+    <div className='flex h-full flex-col overflow-auto bg-encyclopedia-pageFill'>
+      <div className='sticky top-0 z-20 w-full bg-encyclopedia-pageFill p-2'>
         <Input
           type='search'
           placeholder='Search...'
-          className='border-encyclopedia-border bg-encyclopedia-entryFill w-full rounded-none border-4 text-black placeholder:text-gray-600'
+          className='w-full rounded-none border-4 border-encyclopedia-border bg-encyclopedia-entryFill text-black placeholder:text-gray-600'
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
@@ -66,6 +67,11 @@ export const SelectionGrids = () => {
       <SelectionGrid items={filteredCrabPotData} />
       <SectionDivider title='Quest Items' />
       <SelectionGrid items={filteredQuestItemData} />
+      <div className='grid h-0 w-full grid-cols-2 overflow-hidden p-0 2xl:grid-cols-3'>
+        <GridItemBlankEntry />
+        <GridItemBlankEntry />
+        <GridItemBlankEntry />
+      </div>
     </div>
   );
 };

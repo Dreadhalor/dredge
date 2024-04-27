@@ -4,15 +4,15 @@ import { GridItem, PackedItem } from '@dredge/types';
 import { EncyclopediaUnderlineImage } from '@dredge/assets/ui';
 import { v4 as uuidv4 } from 'uuid';
 
-export const GRID_SQUARE_SIZE = 40;
-
 const EncyclopediaGridSquare = () => {
+  const { getEncyclopediaGridSquareSize } = useDredge();
+
   return (
     <div
-      className='border-encyclopedia-squareBorder border'
+      className='border border-encyclopedia-squareBorder'
       style={{
-        width: GRID_SQUARE_SIZE,
-        height: GRID_SQUARE_SIZE,
+        width: getEncyclopediaGridSquareSize(),
+        height: getEncyclopediaGridSquareSize(),
       }}
     ></div>
   );
@@ -24,13 +24,15 @@ type EncyclopediaGridProps = {
 };
 
 const EncyclopediaGrid = ({ width, height }: EncyclopediaGridProps) => {
+  const { getEncyclopediaGridSquareSize } = useDredge();
+
   return (
     <div className='absolute inset-0 flex items-center justify-center'>
       <div
         className='grid'
         style={{
-          gridTemplateColumns: `repeat(${width}, ${GRID_SQUARE_SIZE}px)`,
-          gridTemplateRows: `repeat(${height}, ${GRID_SQUARE_SIZE}px)`,
+          gridTemplateColumns: `repeat(${width}, ${getEncyclopediaGridSquareSize()}px)`,
+          gridTemplateRows: `repeat(${height}, ${getEncyclopediaGridSquareSize()}px)`,
         }}
       >
         {Array.from({ length: width * height }, (_, i) => (
@@ -41,14 +43,17 @@ const EncyclopediaGrid = ({ width, height }: EncyclopediaGridProps) => {
   );
 };
 
-const EncyclopediaGridSpacer = () => (
-  <div
-    style={{
-      width: 6 * GRID_SQUARE_SIZE,
-      height: 3 * GRID_SQUARE_SIZE,
-    }}
-  />
-);
+const EncyclopediaGridSpacer = () => {
+  const { getEncyclopediaGridSquareSize } = useDredge();
+  return (
+    <div
+      style={{
+        width: 6 * getEncyclopediaGridSquareSize(),
+        height: 3 * getEncyclopediaGridSquareSize(),
+      }}
+    />
+  );
+};
 
 type Props = {
   item: GridItem;
@@ -80,19 +85,34 @@ export const GridItemEntry = ({ item }: Props) => {
 
   return (
     <div
-      className='bg-encyclopedia-pageFill flex h-fit cursor-pointer select-none flex-col items-center gap-1 p-3 text-black hover:brightness-105'
+      className='flex h-fit cursor-pointer select-none flex-col items-center gap-1 bg-encyclopedia-pageFill p-3 text-black hover:brightness-105'
       onClick={handleClick}
     >
-      <span className='flex flex-col items-center'>
+      <span className='flex flex-col items-center text-[14px] lg:text-[16px]'>
         {`${getTitle()}${inInventory ? ' (✓)' : ''}`}
         <img src={EncyclopediaUnderlineImage} width={100} />
       </span>
-      <div className='bg-encyclopedia-entryFill border-encyclopedia-border relative items-center justify-center border-[5px] p-[2px]'>
+      <div className='relative items-center justify-center border-[5px] border-encyclopedia-border bg-encyclopedia-entryFill p-[2px]'>
         <EncyclopediaGridSpacer />
         <EncyclopediaGrid width={width} height={height} />
         <div className='absolute inset-0 flex items-center justify-center'>
           <FishImage fish={item} />
         </div>
+      </div>
+    </div>
+  );
+};
+
+export const GridItemBlankEntry = () => {
+  return (
+    <div className='pointer-events-none invisible flex h-fit cursor-pointer select-none flex-col items-center gap-1 bg-encyclopedia-pageFill p-3 text-black hover:brightness-105'>
+      <span className='flex flex-col items-center text-[14px] lg:text-[16px]'>
+        {'Empty'}
+        <img src={EncyclopediaUnderlineImage} width={100} />
+      </span>
+      <div className='relative items-center justify-center border-[5px] border-encyclopedia-border bg-encyclopedia-entryFill p-[2px]'>
+        <EncyclopediaGridSpacer />
+        <EncyclopediaGrid width={6} height={3} />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { getItemAt } from '@dredge/lib/utils';
 import { HullData, PackedItem, SlotType } from '@dredge/types';
 import { createContext, useContext, useState } from 'react';
 import { binPackingAsync } from '@dredge/lib/bin-packing/bin-packing-async';
+import { useMediaQuery } from 'react-responsive';
 
 type DredgeProviderContextType = {
   hull: HullData;
@@ -13,6 +14,7 @@ type DredgeProviderContextType = {
   isLoading: boolean;
   cancelCalculation: () => void;
   packItems: (newItems: PackedItem[]) => void;
+  getEncyclopediaGridSquareSize: () => number;
 };
 
 const DredgeProviderContext = createContext<DredgeProviderContextType>(
@@ -32,6 +34,18 @@ export const DredgeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [abortController, setAbortController] =
     useState<AbortController | null>(null);
+
+  const BASE_ENCYCLOPEDIA_GRID_SQUARE_SIZE = 40;
+  const isLarge = useMediaQuery({
+    query: '(min-width: 1024px)',
+  });
+
+  const getEncyclopediaGridSquareSize = () => {
+    if (isLarge) {
+      return BASE_ENCYCLOPEDIA_GRID_SQUARE_SIZE;
+    }
+    return BASE_ENCYCLOPEDIA_GRID_SQUARE_SIZE * 0.8;
+  };
 
   const toggleSlot = (row: number, col: number) => {
     // if there is an item in the slot, remove the item
@@ -107,6 +121,7 @@ export const DredgeProvider = ({ children }: { children: React.ReactNode }) => {
         isLoading,
         cancelCalculation,
         packItems,
+        getEncyclopediaGridSquareSize,
       }}
     >
       {children}

@@ -1,6 +1,6 @@
 import { GridItem } from '@dredge/types';
-import { GRID_SQUARE_SIZE } from '../selection-grid/grid-entry';
 import { cn } from '@dredge/lib/utils';
+import { useDredge } from '@dredge/providers/dredge-provider';
 
 type Props = {
   item: GridItem;
@@ -11,23 +11,28 @@ type Props = {
 };
 export const GridImage = ({
   item: { image, width, height, imageWidth, imageHeight },
-  gridSquareSize = GRID_SQUARE_SIZE,
+  gridSquareSize,
   rotation = 0,
   topLeft = { x: 0, y: 0 },
   className,
 }: Props) => {
+  const { getEncyclopediaGridSquareSize } = useDredge();
+  const effectiveGridSquareSize =
+    gridSquareSize || getEncyclopediaGridSquareSize();
+
   const getRotatedTop = () => {
-    if (rotation === 270) return (topLeft?.y + width) * gridSquareSize;
-    if (rotation === 180) return (topLeft?.y + height) * gridSquareSize;
+    if (rotation === 270) return (topLeft?.y + width) * effectiveGridSquareSize;
+    if (rotation === 180)
+      return (topLeft?.y + height) * effectiveGridSquareSize;
     // Default case for rotation === 0 or 90
-    return topLeft?.y * gridSquareSize;
+    return topLeft?.y * effectiveGridSquareSize;
   };
 
   const getRotatedLeft = () => {
-    if (rotation === 90) return (topLeft?.x + height) * gridSquareSize;
-    if (rotation === 180) return (topLeft?.x + width) * gridSquareSize;
+    if (rotation === 90) return (topLeft?.x + height) * effectiveGridSquareSize;
+    if (rotation === 180) return (topLeft?.x + width) * effectiveGridSquareSize;
     // Default case for rotation === 0 or 270
-    return topLeft?.x * gridSquareSize;
+    return topLeft?.x * effectiveGridSquareSize;
   };
 
   return (
@@ -37,8 +42,8 @@ export const GridImage = ({
         className,
       )}
       style={{
-        width: gridSquareSize * width,
-        height: gridSquareSize * height,
+        width: effectiveGridSquareSize * width,
+        height: effectiveGridSquareSize * height,
         rotate: `${rotation}deg`,
         top: getRotatedTop(),
         left: getRotatedLeft(),
@@ -47,8 +52,8 @@ export const GridImage = ({
       <img
         draggable={false}
         src={image}
-        width={gridSquareSize * (imageWidth || width)}
-        height={gridSquareSize * (imageHeight || height)}
+        width={effectiveGridSquareSize * (imageWidth || width)}
+        height={effectiveGridSquareSize * (imageHeight || height)}
       />
     </div>
   );

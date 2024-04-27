@@ -1,5 +1,5 @@
 import { GridItem } from '@dredge/types';
-import { GRID_SQUARE_SIZE } from '../selection-grid/grid-entry';
+import { useDredge } from '@dredge/providers/dredge-provider';
 
 type Props = {
   fish: GridItem;
@@ -8,23 +8,27 @@ type Props = {
 };
 export const FishImage = ({
   fish: { image, width, height, imageWidth, imageHeight },
-  gridSquareSize = GRID_SQUARE_SIZE,
+  gridSquareSize,
   rotation = 0,
 }: Props) => {
+  const { getEncyclopediaGridSquareSize } = useDredge();
+  const effectiveGridSquareSize =
+    gridSquareSize || getEncyclopediaGridSquareSize();
+
   return (
     <div
       className='flex items-center justify-center'
       style={{
-        width: gridSquareSize * width,
-        height: gridSquareSize * height,
+        width: effectiveGridSquareSize * width,
+        height: effectiveGridSquareSize * height,
         rotate: `${rotation}deg`,
       }}
     >
       <img
         draggable={false}
         src={image}
-        width={gridSquareSize * (imageWidth || width)}
-        height={gridSquareSize * (imageHeight || height)}
+        width={effectiveGridSquareSize * (imageWidth || width)}
+        height={effectiveGridSquareSize * (imageHeight || height)}
       />
     </div>
   );
