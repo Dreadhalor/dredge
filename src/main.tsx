@@ -4,6 +4,7 @@ import { Dredge } from './dredge';
 import './index.css';
 import { DredgeProvider } from './providers/dredge-provider';
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/react';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -18,5 +19,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         }}
       />
     </DredgeProvider>
+    <Analytics />
   </React.StrictMode>,
 );
