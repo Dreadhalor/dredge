@@ -423,7 +423,7 @@ export const fishData: Fish[] = [
     width: 3,
     height: 2,
     shape: [
-      [0, 1, 1],
+      [0, 1, 0],
       [1, 1, 1],
     ],
     value: 40,
